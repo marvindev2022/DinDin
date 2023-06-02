@@ -1,13 +1,32 @@
 import { useEffect, useState } from "react";
 import CloseIcon from "../../assets/close-icon.svg";
-import api from "src/services/api";
-import { formatToDate } from "src/utils/formatters";
-import { notifyError, notifySucess } from "src/utils/notifications";
-import { loadCategories, loadTransactions } from "src/utils/requisitions";
-import { getItem } from "src/utils/storage";
+import api from "./../../services/api";
+import { formatToDate } from "./../../utils/formatters";
+import { notifyError, notifySucess } from "./../../utils/notifications";
+import { loadCategories, loadTransactions } from "./../../utils/requisitions";
+import { getItem } from "./../../utils/storage";
 import "./styles.css";
 
-const defaultForm = {
+type Category = {
+  id: string;
+  name: string;
+};
+
+interface DefaultForm {
+  value: string;
+  category: Category;
+  date: string;
+  description: string;
+}
+
+interface EditTransactionModalProps {
+  open: boolean;
+  handleClose: () => void;
+  setTransactions: (transactions: DefaultForm[]) => void;
+  currentItemToEdit: React.Dispatch<React.SetStateAction<DefaultForm | null>>;
+}
+
+const defaultForm: DefaultForm = {
   value: "",
   category: {
     id: "",
@@ -22,40 +41,40 @@ function EditTransactionModal({
   handleClose,
   setTransactions,
   currentItemToEdit,
-}) {
+}: EditTransactionModalProps) {
   const token = getItem("token");
 
-  const [option, setOption] = useState("out");
-  const [categories, setCategories] = useState([]);
-  const [form, setForm] = useState({ ...defaultForm });
+  const [option, setOption] = useState<string>("out");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [form, setForm] = useState<DefaultForm>({ ...defaultForm });
 
-  function handleChangeForm({ target }) {
-    setForm({ ...form, [target.name]: target.value });
+  function handleChangeForm(event: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, [event.target.name]: event.target.value });
   }
 
-  function handleChangeSelect({ target }) {
-    const currentyCategory = categories.find(
-      (categorie) => categorie.descricao === categorie.value
+  function handleChangeSelect(event: React.ChangeEvent<HTMLSelectElement>) {
+    const selectedCategory = categories.find(
+      (category) => category.name === event.target.value
     );
 
-    if (!currentyCategory) {
+    if (!selectedCategory) {
       return;
     }
 
     setForm({
       ...form,
-      category: { id: currentyCategory.id, name: currentyCategory.descricao },
+      category: { id: selectedCategory.id, name: selectedCategory.name },
     });
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
 
     const [day, month, year] = form.date.split("/");
 
     try {
       const response = await api.put(
-        `/transacao/${currentItemToEdit.id}`,
+        `/transacao/${currentItemToEdit?.id}`,
         {
           tipo: option === "in" ? "entrada" : "saida",
           descricao: form.description,
@@ -82,7 +101,7 @@ function EditTransactionModal({
       const allTransactions = await loadTransactions();
 
       setTransactions([...allTransactions]);
-    } catch (error) {
+    } catch (error: any) {
       notifyError(error.response.data);
     }
   }
@@ -131,14 +150,14 @@ function EditTransactionModal({
             <div className="container-options">
               <button
                 className={`${option === "out" ? "option-off" : "option-in"}
-                                   btn-big`}
+                                 btn-big`}
                 onClick={() => setOption("in")}
               >
                 Entrada
               </button>
               <button
                 className={`${option === "out" ? "option-out" : "option-off"}
-                               btn-big`}
+                             btn-big`}
                 onClick={() => setOption("out")}
               >
                 Saída
@@ -165,9 +184,9 @@ function EditTransactionModal({
                   required
                 >
                   <option>Selecione</option>
-                  {categories.map((categorie) => (
-                    <option key={categorie.id} value={categorie.descricao}>
-                      {categorie.descricao}
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.name}>
+                      {category.name}
                     </option>
                   ))}
                 </select>

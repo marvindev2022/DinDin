@@ -1,9 +1,8 @@
-import api from "src/services/api";
-import { getItem } from "src/utils/storage";
+import api from "./../services/api";
+import { getItem } from "./../utils/storage";
+let token: string | null = "";
 
 export async function loadCategories() {
-  let token = "";
-
   token = getItem("token");
 
   try {
@@ -13,17 +12,15 @@ export async function loadCategories() {
       },
     });
 
-    const orderedCategories = response.data.sort((a, b) => a - b);
+    const orderedCategories = response.data.sort((a:number, b:number) => a - b);
 
     return orderedCategories;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.response);
   }
 }
 
 export async function loadTransactions() {
-  let token = "";
-
   token = getItem("token");
 
   try {
@@ -34,7 +31,7 @@ export async function loadTransactions() {
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.log(error.response);
   }
 }

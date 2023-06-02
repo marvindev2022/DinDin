@@ -1,31 +1,37 @@
-import {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilterIcon from "../../assets/filter-icon.svg";
-import Chip from "src/components/Chip";
+import Chip from "./../../components/Chip";
 import "./styles.css";
-import { loadCategories, loadTransactions } from "src/utils/requisitions";
+import { loadCategories, loadTransactions } from "./../../utils/requisitions";
 
 interface FilterProps {
   setTransactions: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-function Filter({ setTransactions }:FilterProps) {
+interface Category {
+  id: string;
+  descricao: string;
+  checked: boolean;
+}
+
+function Filter({ setTransactions }: FilterProps): JSX.Element {
   const [open, setOpen] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   async function handleClearFilters() {
-    let localCategories = [...categories];
-    localCategories.forEach((category:any) => (category.checked = false));
+    const localCategories = [...categories];
+    localCategories.forEach((category:Category) => (category.checked = false));
     setCategories([...localCategories]);
 
-    let allTransactions = await loadTransactions();
+    const allTransactions = await loadTransactions();
     setTransactions([...allTransactions]);
   }
 
   async function handleApplyFilters() {
     let localTransactions = await loadTransactions();
-    let categoriesCheckedId = categories
-      .filter((category:any) => category.checked)
-      .map((category:any) => category.id);
+    const categoriesCheckedId = categories
+      .filter((category:Category) => category.checked)
+      .map((category) => category.id);
 
     if (categoriesCheckedId.length) {
       localTransactions = localTransactions.filter((transaction:any) =>
@@ -38,8 +44,8 @@ function Filter({ setTransactions }:FilterProps) {
 
   useEffect(() => {
     async function loadAllCategories() {
-      const allCategories:never[] = await loadCategories();
-      allCategories.forEach((category:any) => {
+      const allCategories: Category[] = await loadCategories();
+      allCategories.forEach((category:Category) => {
         category.checked = false;
       });
       setCategories([...allCategories]);
@@ -61,7 +67,7 @@ function Filter({ setTransactions }:FilterProps) {
         <div className="filter-body">
           <strong>Categoria</strong>
           <div className="container-categories">
-            {categories.map((category:any) => (
+            {categories.map((category) => (
               <Chip
                 key={category.id}
                 checked={category.checked}

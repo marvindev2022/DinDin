@@ -1,12 +1,12 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo.svg";
-import api from "src/services/api";
-import { notifyError } from "src/utils/notifications";
-import { getItem, setItem } from "src/utils/storage";
+import api from "./../../services/api";
+import { notifyError } from "./../../utils/notifications";
+import { getItem, setItem } from "./../../utils/storage";
 import "./styles.css";
 
-function SignIn():JSX.Element {
+function SignIn(): JSX.Element {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -16,7 +16,7 @@ function SignIn():JSX.Element {
     if (token) navigate("/main");
   }, [navigate]);
 
-  async function handleSubmit(e:FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!email || !password)
       return notifyError("Todos os campos são obrigatórios.");

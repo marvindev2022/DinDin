@@ -1,10 +1,10 @@
 import React from "react";
 import { Outlet, Route, Routes, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Main from "src/pages/Main";
-import SignIn from "src/pages/SignIn";
-import SignUp from "src/pages/SignUp";
-import { getItem } from "src/utils/storage";
+import Main from "./pages/Main";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import { getItem } from "./utils/storage";
 
 function ProtectedRoutes() {
   const token = getItem("token");
@@ -18,6 +18,7 @@ function MainRoutes(): JSX.Element {
       <ToastContainer />
       <Routes>
         <Route path="/" element={<SignIn />} />
+        <Route path="/signin" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
 
         <Route element={<ProtectedRoutes />}>

@@ -1,12 +1,28 @@
 import { useEffect, useState } from "react";
-import api from "src/services/api";
-import { formatToMoney } from "src/utils/formatters";
-import { notifyError } from "src/utils/notifications";
-import { getItem } from "src/utils/storage";
+import api from "./../../services/api";
+import { formatToMoney } from "./../../utils/formatters";
+import { notifyError } from "./../../utils/notifications";
+import { getItem } from "./../../utils/storage";
 import "./styles.css";
-
-function Resume({ transactions }) {
-  const [extract, setExtract] = useState({
+interface Transaction {
+  id: string;
+  data: string;
+  descricao: string;
+  categoria_id: string;
+  categoria_nome: string;
+  tipo: string;
+  valor: number | string;
+}
+interface ResumeProp{
+  transactions:Transaction[]
+}
+type Extract={
+  in:number | string,
+  out:number | string,
+  balance:number | string
+}
+function Resume({ transactions }: ResumeProp) {
+  const [extract, setExtract] = useState<Extract>({
     in: 0,
     out: 0,
     balance: 0,
@@ -34,8 +50,8 @@ function Resume({ transactions }) {
           out: formatToMoney(Number(saida) / 100),
           balance: formatToMoney(Number(entrada - saida) / 100),
         });
-      } catch (error) {
-        notifyError(error.response.data);
+      } catch (error: unknown) {
+        notifyError((error as any).response.data);
       }
     }
 

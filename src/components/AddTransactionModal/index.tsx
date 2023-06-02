@@ -1,10 +1,10 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Form } from "react-router-dom";
-import CloseIcon from "../../assets/close-icon.svg";
-import api from "src/services/api";
-import { notifyError, notifySuccess } from "src/utils/notifications";
-import { loadCategories, loadTransactions } from "src/utils/requisitions";
-import { getItem } from "src/utils/storage";
+import CloseIcon from "./../../assets/close-icon.svg";
+import api from "./../../services/api";
+import { notifyError, notifySucess } from "./../../utils/notifications";
+import { loadCategories, loadTransactions } from "./../../utils/requisitions";
+import { getItem } from "./../../utils/storage";
 import "./styles.css";
 
 interface Category {
@@ -49,15 +49,13 @@ function AddTransactionModal({
   const [categories, setCategories] = useState<Category[]>([]);
   const [form, setForm] = useState<Form>({ ...defaultForm });
 
-  function handleChangeForm(event: FormEvent) {
-    const { name, value } = event.target
-    setForm({ ...form, [name]: value });
+  function handleChangeForm(event: FormEvent<HTMLInputElement>) {
+    setForm({ ...form, [event.currentTarget.name]: event.currentTarget.value });
   }
 
-  function handleChangeSelect(event: FormEvent) {
-    const { value } = event.target;
+  function handleChangeSelect(event: FormEvent<HTMLSelectElement>) {
     const currentCategory = categories.find(
-      (category: Category) => category.descricao === value
+      (category: Category) => category.descricao === event.currentTarget.value
     );
 
     if (currentCategory) {
@@ -104,7 +102,7 @@ function AddTransactionModal({
         return notifyError(response.data);
       }
 
-      notifySuccess("Transação adicionada.");
+      notifySucess("Transação adicionada.");
 
       handleClose();
       setForm({ ...defaultForm });
@@ -209,6 +207,6 @@ function AddTransactionModal({
       )}
     </>
   );
-                  }
+}
 
-                  export default AddTransactionModal
+export default AddTransactionModal;

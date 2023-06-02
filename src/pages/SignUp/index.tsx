@@ -1,8 +1,8 @@
 import { FormEvent, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Logo from '../../assets/logo.svg';
-import api from 'src/services/api';
-import { notifyError, notifySucess } from 'src/utils/notifications';
+import Logo from './../../assets/logo.svg';
+import api from './../../services/api';
+import { notifyError, notifySucess } from './../../utils/notifications';
 import './styles.css';
 
 interface DefaultFrom{

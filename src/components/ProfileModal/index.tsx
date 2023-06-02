@@ -1,28 +1,40 @@
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import CloseIcon from "../../assets/close-icon.svg";
-import api from "src/services/api";
-import { notifyError, notifySucess } from "src/utils/notifications";
-import { getItem, setItem } from "src/utils/storage";
+import api from "./../../services/api";
+import { notifyError, notifySucess } from "./../../utils/notifications";
+import { getItem, setItem } from "./../../utils/storage";
 import "./styles.css";
 
-const defaultForm = {
+interface ProfileProps {
+  open: boolean;
+  handleClose: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface DefaultForm {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+const defaultForm: DefaultForm = {
   name: "",
   email: "",
   password: "",
   confirmPassword: "",
 };
 
-function ProfileModal({ open, handleClose }) {
+function ProfileModal({ open, handleClose }: ProfileProps): JSX.Element {
   const token = getItem("token");
 
-  const [form, setForm] = useState({ ...defaultForm });
+  const [form, setForm] = useState<DefaultForm>({ ...defaultForm });
 
-  function handleChangeForm({ target }) {
-    setForm({ ...form, [target.name]: target.value });
+  function handleChangeForm(event: React.ChangeEvent<HTMLInputElement>): void {
+    setForm({ ...form, [event.target.name]: event.target.value });
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event: FormEvent): Promise<void> {
+    event.preventDefault();
 
     try {
       if (
@@ -60,21 +72,19 @@ function ProfileModal({ open, handleClose }) {
 
       notifySucess("Perfil atualizado.");
 
-      handleClose();
+      handleClose(true);
       handleClearForm();
-    } catch (error) {
+    } catch (error: any) {
       notifyError(error.response.data.mensagem);
     }
   }
 
-  function handleClearForm() {
+  function handleClearForm(): void {
     setForm({ ...defaultForm });
   }
 
   useEffect(() => {
     async function loadUserProfile() {
-      const token = getItem("token");
-
       try {
         const response = await api.get("/usuario", {
           headers: {
@@ -87,8 +97,10 @@ function ProfileModal({ open, handleClose }) {
         setForm({
           name: nome,
           email: email,
+          password: "",
+          confirmPassword: "",
         });
-      } catch (error) {
+      } catch (error: any) {
         notifyError(error.response.data.mensagem);
       }
     }
@@ -96,68 +108,66 @@ function ProfileModal({ open, handleClose }) {
     if (open) {
       loadUserProfile();
     }
-  }, [open]);
-
-  return (
-    <>
-      {open && (
-        <div className="backdrop">
-          <div className="modal">
-            <img
-              className="close-button"
-              src={CloseIcon}
-              alt="close-button"
-              onClick={handleClose}
-            />
-            <h2>Editar Perfil</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="container-inputs">
-                <label>Nome</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChangeForm}
-                  required
-                />
-              </div>
-              <div className="container-inputs">
-                <label>E-mail</label>
-                <input
-                  type="text"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChangeForm}
-                  required
-                />
-              </div>
-              <div className="container-inputs">
-                <label>Senha</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={form.password ?? ""}
-                  onChange={handleChangeForm}
-                  required
-                />
-              </div>
-              <div className="container-inputs">
-                <label>Confirmação de senha</label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  value={form.confirmPassword ?? ""}
-                  onChange={handleChangeForm}
-                  required
-                />
-              </div>
-              <button className="btn-purple btn-small">Confirmar</button>
-            </form>
-          </div>
+  }, [open, token]);
+return (
+  <>
+    {open && (
+      <div className="backdrop">
+        <div className="modal">
+          <img
+            className="close-button"
+            src={CloseIcon}
+            alt="close-button"
+            onClick={() => handleClose(false)}
+          />
+          <h2>Editar Perfil</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="container-inputs">
+              <label>Nome</label>
+              <input
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChangeForm}
+                required
+              />
+            </div>
+            <div className="container-inputs">
+              <label>E-mail</label>
+              <input
+                type="text"
+                name="email"
+                value={form.email}
+                onChange={handleChangeForm}
+                required
+              />
+            </div>
+            <div className="container-inputs">
+              <label>Senha</label>
+              <input
+                type="password"
+                name="password"
+                value={form.password ?? ""}
+                onChange={handleChangeForm}
+                required
+              />
+            </div>
+            <div className="container-inputs">
+              <label>Confirmação de senha</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={form.confirmPassword ?? ""}
+                onChange={handleChangeForm}
+                required
+              />
+            </div>
+            <button className="btn-purple btn-small">Confirmar</button>
+          </form>
         </div>
-      )}
-    </>
-  );
-}
-
-export default ProfileModal;
+      </div>
+    )}
+  </>
+);
+    }
+    export default ProfileModal
