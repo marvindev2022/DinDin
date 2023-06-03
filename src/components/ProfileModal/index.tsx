@@ -1,13 +1,13 @@
 import { FormEvent, useEffect, useState } from "react";
 import CloseIcon from "../../assets/close-icon.svg";
-import api from "./../../services/api";
-import { notifyError, notifySucess } from "./../../utils/notifications";
-import { getItem, setItem } from "./../../utils/storage";
+import api from "../../services/api";
+import { notifyError, notifySucess } from "../../utils/notifications";
+import { getItem, setItem } from "../../utils/storage";
 import "./styles.css";
 
 interface ProfileProps {
   open: boolean;
-  handleClose: React.Dispatch<React.SetStateAction<boolean>>;
+  handleClose:  React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface DefaultForm {
@@ -109,65 +109,65 @@ function ProfileModal({ open, handleClose }: ProfileProps): JSX.Element {
       loadUserProfile();
     }
   }, [open, token]);
-return (
-  <>
-    {open && (
-      <div className="backdrop">
-        <div className="modal">
-          <img
-            className="close-button"
-            src={CloseIcon}
-            alt="close-button"
-            onClick={() => handleClose(false)}
-          />
-          <h2>Editar Perfil</h2>
-          <form onSubmit={handleSubmit}>
-            <div className="container-inputs">
-              <label>Nome</label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChangeForm}
-                required
-              />
-            </div>
-            <div className="container-inputs">
-              <label>E-mail</label>
-              <input
-                type="text"
-                name="email"
-                value={form.email}
-                onChange={handleChangeForm}
-                required
-              />
-            </div>
-            <div className="container-inputs">
-              <label>Senha</label>
-              <input
-                type="password"
-                name="password"
-                value={form.password ?? ""}
-                onChange={handleChangeForm}
-                required
-              />
-            </div>
-            <div className="container-inputs">
-              <label>Confirmação de senha</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={form.confirmPassword ?? ""}
-                onChange={handleChangeForm}
-                required
-              />
-            </div>
-            <button className="btn-purple btn-small">Confirmar</button>
-          </form>
+  return (
+    <>
+      {open && (
+        <div className="backdrop">
+          <div className="modal">
+            <img
+              className="close-button"
+              src={CloseIcon}
+              alt="close-button"
+              onClick={() => handleClose(false)}
+            />
+            <h2>Editar Perfil</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="container-inputs">
+                <label>Nome</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChangeForm}
+                  required
+                />
+              </div>
+              <div className="container-inputs">
+                <label>E-mail</label>
+                <input
+                  type="text"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChangeForm}
+                  required
+                />
+              </div>
+              <div className="container-inputs">
+                <label>Senha</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={form.password ?? ""}
+                  onChange={handleChangeForm}
+                  required
+                />
+              </div>
+              <div className="container-inputs">
+                <label>Confirmação de senha</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={form.confirmPassword ?? ""}
+                  onChange={handleChangeForm}
+                  required
+                />
+              </div>
+              <button className="btn-purple btn-small">Confirmar</button>
+            </form>
+          </div>
         </div>
-      </div>
-    )}
-  </>
-);
-    }
-    export default ProfileModal
+      )}
+    </>
+  );
+}
+export default ProfileModal;

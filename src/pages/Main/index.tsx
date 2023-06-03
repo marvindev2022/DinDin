@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import "./styles.css";
-import Header from "./../../components/Header";
-import Filter from "./../../components/Filter";
-import Table from "./../../components/Table";
-import Resume from "./../../components/Resume";
-import AddTransactionModal from "./../../components/AddTransactionModal";
-import EditTransactionModal from "./../../components/EditTransactionModal";
-import ProfileModal from "./../../components/ProfileModal";
-import { loadTransactions } from "./../../utils/requisitions";
+import Header from "../../components/Header";
+import Filter from "../../components/Filter";
+import Table from "../../components/Table";
+import Resume from "../../components/Resume";
+import AddTransactionModal from "../../components/AddTransactionModal";
+import EditTransactionModal from "../../components/EditTransactionModal";
+import ProfileModal from "../../components/ProfileModal";
+import { loadTransactions } from "../../utils/requisitions";
 
 interface Transaction {
   id: string;
@@ -25,8 +25,7 @@ function Main(): JSX.Element {
     useState<boolean>(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
-  const [currentItemToEdit, setCurrentItemToEdit] =
-    useState<Transaction | null>(null);
+  const [currentItemToEdit, setCurrentItemToEdit] = useState<Transaction>();
 
   useEffect(() => {
     async function fetchTransactions() {
@@ -38,7 +37,7 @@ function Main(): JSX.Element {
 
   return (
     <div className="container-main">
-      <Header handleEditProfile={() => setOpenModalProfile(true)} />
+      <Header setOpenModalProfile={() => setOpenModalProfile(true)} />
       <section>
         <div className="width-limit">
           <div className="container-data">

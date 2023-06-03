@@ -1,10 +1,10 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Form } from "react-router-dom";
-import CloseIcon from "./../../assets/close-icon.svg";
-import api from "./../../services/api";
-import { notifyError, notifySucess } from "./../../utils/notifications";
-import { loadCategories, loadTransactions } from "./../../utils/requisitions";
-import { getItem } from "./../../utils/storage";
+import CloseIcon from "../../assets/close-icon.svg";
+import api from "../../services/api";
+import { notifyError, notifySucess } from "../../utils/notifications";
+import { loadCategories, loadTransactions } from "../../utils/requisitions";
+import { getItem } from "../../utils/storage";
 import "./styles.css";
 
 interface Category {
@@ -21,11 +21,19 @@ interface Form {
   date: string;
   description: string;
 }
-
+interface Transaction {
+  id: string;
+  data: string;
+  descricao: string;
+  categoria_id: string;
+  categoria_nome: string;
+  tipo: string;
+  valor: number | string;
+}
 interface AddTransactionModalProps {
   open: boolean;
-  handleClose: () => void;
-  setTransactions: (transactions: any[]) => void;
+  handleClose: React.Dispatch<React.SetStateAction<boolean>>;
+  setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
 }
 
 const defaultForm: Form = {
@@ -45,7 +53,7 @@ function AddTransactionModal({
 }: AddTransactionModalProps): JSX.Element {
   const token = getItem("token");
 
-  const [option, setOption] = useState("out");
+  const [option, setOption] = useState<string>("out");
   const [categories, setCategories] = useState<Category[]>([]);
   const [form, setForm] = useState<Form>({ ...defaultForm });
 
@@ -104,7 +112,7 @@ function AddTransactionModal({
 
       notifySucess("Transação adicionada.");
 
-      handleClose();
+      handleClose(true);
       setForm({ ...defaultForm });
 
       const allTransactions = await loadTransactions();
@@ -133,7 +141,7 @@ function AddTransactionModal({
               className="close-button"
               src={CloseIcon}
               alt="close-button"
-              onClick={handleClose}
+              onClick={() => handleClose}
             />
             <h2>Adicionar Registro</h2>
             <div className="container-options">

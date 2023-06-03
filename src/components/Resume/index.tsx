@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import api from "./../../services/api";
-import { formatToMoney } from "./../../utils/formatters";
-import { notifyError } from "./../../utils/notifications";
-import { getItem } from "./../../utils/storage";
+import api from "../../services/api";
+import { formatToMoney } from "../../utils/formatters";
+import { notifyError } from "../../utils/notifications";
+import { getItem } from "../../utils/storage";
 import "./styles.css";
 interface Transaction {
   id: string;
@@ -13,14 +13,14 @@ interface Transaction {
   tipo: string;
   valor: number | string;
 }
-interface ResumeProp{
-  transactions:Transaction[]
+interface ResumeProp {
+  transactions: Transaction[];
 }
-type Extract={
-  in:number | string,
-  out:number | string,
-  balance:number | string
-}
+type Extract = {
+  in: number | string;
+  out: number | string;
+  balance: number | string;
+};
 function Resume({ transactions }: ResumeProp) {
   const [extract, setExtract] = useState<Extract>({
     in: 0,

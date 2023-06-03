@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import CloseIcon from "../../assets/close-icon.svg";
-import api from "./../../services/api";
-import { formatToDate } from "./../../utils/formatters";
-import { notifyError, notifySucess } from "./../../utils/notifications";
-import { loadCategories, loadTransactions } from "./../../utils/requisitions";
-import { getItem } from "./../../utils/storage";
+import api from "../../services/api";
+import { formatToDate, validateFormatDate } from "../../utils/formatters";
+import { notifyError, notifySucess } from "../../utils/notifications";
+import { loadCategories, loadTransactions } from "../../utils/requisitions";
+import { getItem } from "../../utils/storage";
 import "./styles.css";
 
 type Category = {
@@ -13,21 +13,29 @@ type Category = {
 };
 
 interface DefaultForm {
-  value: string;
+  value:  number;
   category: Category;
-  date: string;
+  date: string ;
   description: string;
 }
-
+interface Transaction {
+  id: string;
+  data: string;
+  descricao: string;
+  categoria_id: string;
+  categoria_nome: string;
+  tipo: string;
+  valor: number;
+}
 interface EditTransactionModalProps {
   open: boolean;
-  handleClose: () => void;
-  setTransactions: (transactions: DefaultForm[]) => void;
-  currentItemToEdit: React.Dispatch<React.SetStateAction<DefaultForm | null>>;
+  handleClose: React.Dispatch<React.SetStateAction<boolean>>;
+  setTransactions: React.Dispatch<React.SetStateAction<Transaction[]> | undefined>;
+  currentItemToEdit: Transaction;
 }
 
 const defaultForm: DefaultForm = {
-  value: "",
+  value: 0,
   category: {
     id: "",
     name: "",
@@ -70,7 +78,7 @@ function EditTransactionModal({
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
-    const [day, month, year] = form.date.split("/");
+    const { day, month, year } = validateFormatDate(form.date);
 
     try {
       const response = await api.put(
@@ -95,7 +103,7 @@ function EditTransactionModal({
 
       notifySucess("Transação atualizada.");
 
-      handleClose();
+      handleClose(true);
       setForm({ ...defaultForm });
 
       const allTransactions = await loadTransactions();
@@ -144,7 +152,7 @@ function EditTransactionModal({
               className="close-button"
               src={CloseIcon}
               alt="close-button"
-              onClick={handleClose}
+              onClick={()=>handleClose}
             />
             <h2>Editar Registro</h2>
             <div className="container-options">

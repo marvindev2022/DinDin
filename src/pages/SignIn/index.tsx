@@ -1,9 +1,9 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/logo.svg";
-import api from "./../../services/api";
-import { notifyError } from "./../../utils/notifications";
-import { getItem, setItem } from "./../../utils/storage";
+import api from "../../services/api";
+import { notifyError } from "../../utils/notifications";
+import { getItem, setItem } from "../../utils/storage";
 import "./styles.css";
 
 function SignIn(): JSX.Element {

@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FilterIcon from "../../assets/filter-icon.svg";
-import Chip from "./../../components/Chip";
+import Chip from "../Chip";
 import "./styles.css";
-import { loadCategories, loadTransactions } from "./../../utils/requisitions";
+import { loadCategories, loadTransactions } from "../../utils/requisitions";
 
+interface Transaction {
+  id: string;
+  data: string;
+  descricao: string;
+  categoria_id: string;
+  categoria_nome: string;
+  tipo: string;
+  valor: number | string;
+}
 interface FilterProps {
-  setTransactions: React.Dispatch<React.SetStateAction<string[]>>;
+  setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
 }
 
 interface Category {
@@ -15,12 +24,12 @@ interface Category {
 }
 
 function Filter({ setTransactions }: FilterProps): JSX.Element {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
   async function handleClearFilters() {
     const localCategories = [...categories];
-    localCategories.forEach((category:Category) => (category.checked = false));
+    localCategories.forEach((category: Category) => (category.checked = false));
     setCategories([...localCategories]);
 
     const allTransactions = await loadTransactions();
@@ -30,11 +39,11 @@ function Filter({ setTransactions }: FilterProps): JSX.Element {
   async function handleApplyFilters() {
     let localTransactions = await loadTransactions();
     const categoriesCheckedId = categories
-      .filter((category:Category) => category.checked)
+      .filter((category: Category) => category.checked)
       .map((category) => category.id);
 
     if (categoriesCheckedId.length) {
-      localTransactions = localTransactions.filter((transaction:any) =>
+      localTransactions = localTransactions.filter((transaction: any) =>
         categoriesCheckedId.includes(transaction.categoria_id)
       );
     }
@@ -45,7 +54,7 @@ function Filter({ setTransactions }: FilterProps): JSX.Element {
   useEffect(() => {
     async function loadAllCategories() {
       const allCategories: Category[] = await loadCategories();
-      allCategories.forEach((category:Category) => {
+      allCategories.forEach((category: Category) => {
         category.checked = false;
       });
       setCategories([...allCategories]);

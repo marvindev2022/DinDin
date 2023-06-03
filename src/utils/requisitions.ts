@@ -1,5 +1,5 @@
-import api from "./../services/api";
-import { getItem } from "./../utils/storage";
+import api from "../services/api";
+import { getItem } from "./storage";
 let token: string | null = "";
 
 export async function loadCategories() {
@@ -12,7 +12,9 @@ export async function loadCategories() {
       },
     });
 
-    const orderedCategories = response.data.sort((a:number, b:number) => a - b);
+    const orderedCategories = response.data.sort(
+      (a: number, b: number) => a - b
+    );
 
     return orderedCategories;
   } catch (error: any) {
