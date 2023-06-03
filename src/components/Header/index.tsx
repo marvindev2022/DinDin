@@ -5,7 +5,7 @@ import Logout from "../../assets/logout.svg";
 import { useNavigate } from "react-router-dom";
 import { clear, getItem } from "../../utils/storage";
 interface HeaderProp {
-  setOpenModalProfile: React.Dispatch<React.SetStateAction<string[]>>
+  setOpenModalProfile: React.Dispatch<React.SetStateAction<boolean>>
 }
 function Header({ setOpenModalProfile }: HeaderProp): JSX.Element {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ function Header({ setOpenModalProfile }: HeaderProp): JSX.Element {
       <div className="width-limit content-header">
         <img src={Logo} alt="Logo" />
         <div className="container-sign-out">
-          <div onClick={() => setOpenModalProfile} className="profile-area">
+          <div onClick={() => setOpenModalProfile(true)} className="profile-area">
             <img src={Profile} alt="Profile" />
             <strong>{userName}</strong>
             <img

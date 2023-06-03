@@ -11,8 +11,8 @@ interface ProfileProps {
 }
 
 interface DefaultForm {
-  name: string;
-  email: string;
+  name: string | null;
+  email: string | null;
   password: string;
   confirmPassword: string;
 }
@@ -50,7 +50,7 @@ function ProfileModal({ open, handleClose }: ProfileProps): JSX.Element {
         return notifyError("As senhas precisam ser iguais.");
       }
 
-      const response = await api.put(
+      const {data,status} = await api.put(
         `/usuario/${getItem("userId")}/editar`,
         {
           nome: form.name,
@@ -64,8 +64,8 @@ function ProfileModal({ open, handleClose }: ProfileProps): JSX.Element {
         }
       );
 
-      if (response.status > 204) {
-        return notifyError(response.data);
+      if (status > 204) {
+        return notifyError(data);
       }
 
       setItem("userName", form.name);
@@ -86,13 +86,13 @@ function ProfileModal({ open, handleClose }: ProfileProps): JSX.Element {
   useEffect(() => {
     async function loadUserProfile() {
       try {
-        const response = await api.get("/usuario", {
+        const {data}= await api.get("/usuario", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        const { nome, email } = response.data;
+        const { nome, email } = data;
 
         setForm({
           name: nome,
